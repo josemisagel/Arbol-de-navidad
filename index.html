@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Conteo Navideño Interactivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         /* Bloqueo total de scroll y recargas táctiles indeseadas */
@@ -15,7 +14,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            overscroll-behavior: none; /* Evita que el móvil recargue al deslizar hacia abajo */
+            overscroll-behavior: none; 
         }
         
         body {
@@ -93,6 +92,11 @@
 </head>
 <body class="h-[100dvh] w-full relative">
 
+    <!-- REPRODUCTOR DE YOUTUBE (TOTALMENTE INVISIBLE) -->
+    <div id="youtube-player-container" style="position: fixed; top: -100px; left: -100px; width: 1px; height: 1px; overflow: hidden; pointer-events: none; opacity: 0.01;">
+        <div id="youtube-player"></div>
+    </div>
+
     <!-- Snow container -->
     <div id="snow-container" class="absolute inset-0 pointer-events-none z-0"></div>
 
@@ -140,7 +144,7 @@
         <img src="arbol.png" alt="Árbol de Navidad" class="h-full w-auto drop-shadow-2xl object-contain scale-125 translate-y-12">
     </div>
 
-    <!-- Music Control (Movido hacia arriba para acompañar el nuevo diseño) -->
+    <!-- Music Control -->
     <button id="music-btn" class="absolute top-6 right-4 md:right-6 z-50 glass-panel bg-red-600 hover:bg-red-500 text-white p-4 rounded-full shadow-xl flex items-center justify-center touch-manipulation text-2xl">
         <span id="play-icon">🎵</span>
         <span id="pause-icon" class="hidden">⏸️</span>
@@ -293,65 +297,66 @@
             }
         }
 
-        // --- 4. TONE.JS CHRISTMAS MUSIC ---
-        let isPlaying = false;
-        let synth;
-
+        // --- 4. YOUTUBE MUSIC LOGIC ---
+        const VIDEO_ID = 'S4QkF9_0-7o'; // <-- CAMBIA ESTO POR EL ID DE YOUTUBE QUE QUIERAS
+        let player, isPlaying = false;
         const musicBtn = document.getElementById('music-btn');
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
 
-        async function initAudio() {
-            await Tone.start();
-            
-            synth = new Tone.PolySynth(Tone.Synth, {
-                oscillator: { type: "triangle" },
-                envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 0.5 }
-            }).toDestination();
-            
-            synth.volume.value = -2;
+        // Cargar el script de YouTube Iframe API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-            const melody = [
-                { time: "0:0", note: "E5", duration: "8n" }, { time: "0:1", note: "E5", duration: "8n" },
-                { time: "0:2", note: "E5", duration: "4n" }, { time: "1:0", note: "E5", duration: "8n" },
-                { time: "1:1", note: "E5", duration: "8n" }, { time: "1:2", note: "E5", duration: "4n" },
-                { time: "2:0", note: "E5", duration: "8n" }, { time: "2:1", note: "G5", duration: "8n" },
-                { time: "2:2", note: "C5", duration: "4n" }, { time: "2:3.5", note: "D5", duration: "16n" },
-                { time: "3:0", note: "E5", duration: "2n" }, { time: "4:0", note: "F5", duration: "8n" },
-                { time: "4:1", note: "F5", duration: "8n" }, { time: "4:2", note: "F5", duration: "4n" },
-                { time: "4:3.5", note: "F5", duration: "16n" }, { time: "5:0", note: "F5", duration: "8n" },
-                { time: "5:1", note: "E5", duration: "8n" }, { time: "5:2", note: "E5", duration: "8n" },
-                { time: "5:3", note: "E5", duration: "16n" }, { time: "5:3.5", note: "E5", duration: "16n" },
-                { time: "6:0", note: "E5", duration: "8n" }, { time: "6:1", note: "D5", duration: "8n" },
-                { time: "6:2", note: "D5", duration: "8n" }, { time: "6:3", note: "E5", duration: "8n" },
-                { time: "7:0", note: "D5", duration: "4n" }, { time: "7:2", note: "G5", duration: "4n" }
-            ];
-
-            const part = new Tone.Part((time, value) => {
-                synth.triggerAttackRelease(value.note, value.duration, time);
-            }, melody).start(0);
-
-            part.loop = true;
-            part.loopEnd = "8:0:0"; 
-            Tone.Transport.bpm.value = 160; 
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '100',
+                width: '100',
+                videoId: VIDEO_ID,
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': VIDEO_ID, 
+                    'modestbranding': 1,
+                    'playsinline': 1,
+                    'enablejsapi': 1,
+                    'origin': window.location.origin
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
         }
 
-        musicBtn.addEventListener('click', async () => {
-            if (!synth) {
-                await initAudio();
+        function onPlayerReady(event) {
+            event.target.setVolume(50); // Volumen al 50%
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                player.playVideo(); // Bucle infinito
             }
+        }
+
+        // Evento del botón de música
+        musicBtn.addEventListener('click', () => {
+            if (!player || typeof player.playVideo !== 'function') return;
 
             isPlaying = !isPlaying;
 
             if (isPlaying) {
-                Tone.Transport.start();
+                player.playVideo();
                 playIcon.classList.add('hidden');
                 pauseIcon.classList.remove('hidden');
                 musicBtn.classList.add('playing');
                 musicBtn.classList.replace('bg-red-600', 'bg-green-500');
                 musicBtn.classList.replace('hover:bg-red-500', 'hover:bg-green-400');
             } else {
-                Tone.Transport.pause();
+                player.pauseVideo();
                 playIcon.classList.remove('hidden');
                 pauseIcon.classList.add('hidden');
                 musicBtn.classList.remove('playing');
