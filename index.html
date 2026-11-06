@@ -10,10 +10,13 @@
     <style>
         body {
             font-family: 'Quicksand', sans-serif;
-            overflow: hidden; /* Prevent scrolling to keep it like an app */
+            overflow: hidden; 
             background: linear-gradient(to bottom, #a1c4fd 0%, #e0f6ff 60%, #ffffff 100%);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
             color: #1e3a8a;
-            touch-action: none; /* Crucial for custom touch events */
+            touch-action: none; 
             position: relative;
         }
         
@@ -51,7 +54,7 @@
         .draggable {
             position: absolute;
             cursor: grab;
-            font-size: 2.5rem; /* Slightly smaller to fit on the tree */
+            font-size: 2.5rem; 
             user-select: none;
             -webkit-user-select: none;
             filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
@@ -69,7 +72,7 @@
         }
         #music-btn.playing {
             animation: pulse 2s infinite;
-            background-color: #10b981; /* Green */
+            background-color: #10b981; 
         }
         
         @keyframes pulse {
@@ -79,13 +82,13 @@
         }
     </style>
 </head>
-<body class="h-screen w-screen relative">
+<body class="h-[100dvh] w-screen relative">
 
     <!-- Snow container -->
     <div id="snow-container" class="absolute inset-0 pointer-events-none z-0"></div>
 
     <!-- Main UI -->
-    <div class="relative z-10 flex flex-col items-center justify-start pt-10 h-full w-full p-4 pointer-events-none">
+    <div class="relative z-10 flex flex-col items-center justify-start pt-20 h-full w-full p-4 pointer-events-none">
         
         <!-- Header -->
         <div class="text-center mb-4 glass-panel p-6 rounded-3xl pointer-events-auto">
@@ -123,20 +126,17 @@
     </div>
 
     <!-- Giant Background Tree -->
-    <!-- Giant Background Tree -->
-    <!-- Giant Background Tree -->
     <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-[1] select-none pointer-events-none w-full flex justify-center items-end" style="height: 65vh;">
         <img src="arbol.png" alt="Árbol de Navidad" class="h-full w-auto drop-shadow-2xl object-contain scale-125 translate-y-12">
     </div>
 
     <!-- Music Control -->
-    <button id="music-btn" class="absolute top-6 right-6 z-50 glass-panel bg-red-600 hover:bg-red-500 text-white p-4 rounded-full shadow-xl flex items-center justify-center touch-manipulation text-2xl">
+    <button id="music-btn" class="absolute top-20 right-4 z-50 glass-panel bg-red-600 hover:bg-red-500 text-white p-4 rounded-full shadow-xl flex items-center justify-center touch-manipulation text-2xl">
         <span id="play-icon">🎵</span>
         <span id="pause-icon" class="hidden">⏸️</span>
     </button>
 
-    <!-- Draggable Decorations (Scattered on the sides) -->
-    <!-- Left side -->
+    <!-- Draggable Decorations -->
     <div class="draggable" style="top: 15%; left: 5%;">🎁</div>
     <div class="draggable" style="top: 25%; left: 10%;">🌟</div>
     <div class="draggable" style="top: 35%; left: 5%;">🔔</div>
@@ -149,7 +149,6 @@
     <div class="draggable" style="top: 70%; left: 22%;">🕯️</div>
     <div class="draggable" style="top: 88%; left: 25%;">🧸</div>
     
-    <!-- Right side -->
     <div class="draggable" style="top: 15%; left: 85%;">🎁</div>
     <div class="draggable" style="top: 25%; left: 80%;">🌟</div>
     <div class="draggable" style="top: 35%; left: 88%;">🔔</div>
@@ -168,10 +167,8 @@
         function updateCountdown() {
             const now = new Date();
             const currentYear = now.getFullYear();
-            // Target is Christmas of the current year
             let targetDate = new Date(`December 25, ${currentYear} 00:00:00`);
             
-            // If Christmas has passed this year, target next year
             if (now > targetDate) {
                 targetDate = new Date(`December 25, ${currentYear + 1} 00:00:00`);
             }
@@ -183,7 +180,6 @@
             const minutes = Math.floor((diff / 1000 / 60) % 60);
             const seconds = Math.floor((diff / 1000) % 60);
 
-            // Format with leading zeros
             document.getElementById('days').innerText = days.toString().padStart(2, '0');
             document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
             document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
@@ -202,11 +198,10 @@
                 const flake = document.createElement('div');
                 flake.classList.add('snow');
                 
-                // Random properties
-                const size = Math.random() * 4 + 2; // 2px to 6px
-                const left = Math.random() * 100; // 0% to 100%
-                const duration = Math.random() * 10 + 5; // 5s to 15s
-                const delay = Math.random() * -15; // Start at random times
+                const size = Math.random() * 4 + 2; 
+                const left = Math.random() * 100; 
+                const duration = Math.random() * 10 + 5; 
+                const delay = Math.random() * -15; 
                 
                 flake.style.width = `${size}px`;
                 flake.style.height = `${size}px`;
@@ -219,42 +214,35 @@
         }
         createSnowflakes();
 
-        // --- 3. DRAG AND DROP (TOUCH & MOUSE COMPATIBLE) ---
+        // --- 3. DRAG AND DROP ---
         const draggables = document.querySelectorAll('.draggable');
         
         let activeItem = null;
         let initialX, initialY, currentX, currentY;
-        let xOffset = 0, yOffset = 0;
 
         draggables.forEach(item => {
-            // Initialize data offsets to 0
             item.dataset.xOffset = 0;
             item.dataset.yOffset = 0;
 
-            // Touch events
             item.addEventListener('touchstart', dragStart, { passive: false });
             item.addEventListener('touchend', dragEnd, false);
             item.addEventListener('touchmove', drag, { passive: false });
 
-            // Mouse events
             item.addEventListener('mousedown', dragStart, false);
             document.addEventListener('mouseup', dragEnd, false);
             document.addEventListener('mousemove', drag, false);
         });
 
         function dragStart(e) {
-            // Check if the target is one of our draggables
             if (!e.target.classList.contains('draggable')) return;
             
             activeItem = e.target;
             
-            // Bring to front
             draggables.forEach(d => d.style.zIndex = 10);
             activeItem.style.zIndex = 100;
 
-            // Get current offsets from data attributes
-            xOffset = parseFloat(activeItem.dataset.xOffset);
-            yOffset = parseFloat(activeItem.dataset.yOffset);
+            let xOffset = parseFloat(activeItem.dataset.xOffset);
+            let yOffset = parseFloat(activeItem.dataset.yOffset);
 
             if (e.type === "touchstart") {
                 initialX = e.touches[0].clientX - xOffset;
@@ -267,7 +255,7 @@
 
         function drag(e) {
             if (activeItem) {
-                e.preventDefault(); // Prevent scrolling on touch devices while dragging
+                e.preventDefault(); 
 
                 if (e.type === "touchmove") {
                     currentX = e.touches[0].clientX - initialX;
@@ -277,7 +265,6 @@
                     currentY = e.clientY - initialY;
                 }
 
-                // Update data attributes
                 activeItem.dataset.xOffset = currentX;
                 activeItem.dataset.yOffset = currentY;
 
@@ -296,10 +283,9 @@
             }
         }
 
-        // --- 4. TONE.JS CHRISTMAS MUSIC (Jingle Bells) ---
+        // --- 4. TONE.JS CHRISTMAS MUSIC ---
         let isPlaying = false;
         let synth;
-        let sequence;
 
         const musicBtn = document.getElementById('music-btn');
         const playIcon = document.getElementById('play-icon');
@@ -308,54 +294,27 @@
         async function initAudio() {
             await Tone.start();
             
-            // Create a cheerful, upbeat synthesizer without the dark reverb
             synth = new Tone.PolySynth(Tone.Synth, {
                 oscillator: { type: "triangle" },
-                envelope: {
-                    attack: 0.05,
-                    decay: 0.2,
-                    sustain: 0.2,
-                    release: 0.5
-                }
+                envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 0.5 }
             }).toDestination();
             
             synth.volume.value = -2;
 
-            // Jingle Bells (Upbeat and Fast)
             const melody = [
-                { time: "0:0", note: "E5", duration: "8n" },
-                { time: "0:1", note: "E5", duration: "8n" },
-                { time: "0:2", note: "E5", duration: "4n" },
-                
-                { time: "1:0", note: "E5", duration: "8n" },
-                { time: "1:1", note: "E5", duration: "8n" },
-                { time: "1:2", note: "E5", duration: "4n" },
-                
-                { time: "2:0", note: "E5", duration: "8n" },
-                { time: "2:1", note: "G5", duration: "8n" },
-                { time: "2:2", note: "C5", duration: "4n" },
-                { time: "2:3.5", note: "D5", duration: "16n" },
-                
-                { time: "3:0", note: "E5", duration: "2n" },
-                
-                { time: "4:0", note: "F5", duration: "8n" },
-                { time: "4:1", note: "F5", duration: "8n" },
-                { time: "4:2", note: "F5", duration: "4n" },
-                { time: "4:3.5", note: "F5", duration: "16n" },
-                
-                { time: "5:0", note: "F5", duration: "8n" },
-                { time: "5:1", note: "E5", duration: "8n" },
-                { time: "5:2", note: "E5", duration: "8n" },
-                { time: "5:3", note: "E5", duration: "16n" },
-                { time: "5:3.5", note: "E5", duration: "16n" },
-                
-                { time: "6:0", note: "E5", duration: "8n" },
-                { time: "6:1", note: "D5", duration: "8n" },
-                { time: "6:2", note: "D5", duration: "8n" },
-                { time: "6:3", note: "E5", duration: "8n" },
-                
-                { time: "7:0", note: "D5", duration: "4n" },
-                { time: "7:2", note: "G5", duration: "4n" }
+                { time: "0:0", note: "E5", duration: "8n" }, { time: "0:1", note: "E5", duration: "8n" },
+                { time: "0:2", note: "E5", duration: "4n" }, { time: "1:0", note: "E5", duration: "8n" },
+                { time: "1:1", note: "E5", duration: "8n" }, { time: "1:2", note: "E5", duration: "4n" },
+                { time: "2:0", note: "E5", duration: "8n" }, { time: "2:1", note: "G5", duration: "8n" },
+                { time: "2:2", note: "C5", duration: "4n" }, { time: "2:3.5", note: "D5", duration: "16n" },
+                { time: "3:0", note: "E5", duration: "2n" }, { time: "4:0", note: "F5", duration: "8n" },
+                { time: "4:1", note: "F5", duration: "8n" }, { time: "4:2", note: "F5", duration: "4n" },
+                { time: "4:3.5", note: "F5", duration: "16n" }, { time: "5:0", note: "F5", duration: "8n" },
+                { time: "5:1", note: "E5", duration: "8n" }, { time: "5:2", note: "E5", duration: "8n" },
+                { time: "5:3", note: "E5", duration: "16n" }, { time: "5:3.5", note: "E5", duration: "16n" },
+                { time: "6:0", note: "E5", duration: "8n" }, { time: "6:1", note: "D5", duration: "8n" },
+                { time: "6:2", note: "D5", duration: "8n" }, { time: "6:3", note: "E5", duration: "8n" },
+                { time: "7:0", note: "D5", duration: "4n" }, { time: "7:2", note: "G5", duration: "4n" }
             ];
 
             const part = new Tone.Part((time, value) => {
@@ -363,8 +322,8 @@
             }, melody).start(0);
 
             part.loop = true;
-            part.loopEnd = "8:0:0"; // Loop every 8 measures
-            Tone.Transport.bpm.value = 160; // High BPM for cheerful mood!
+            part.loopEnd = "8:0:0"; 
+            Tone.Transport.bpm.value = 160; 
         }
 
         musicBtn.addEventListener('click', async () => {
@@ -390,7 +349,6 @@
                 musicBtn.classList.replace('hover:bg-green-400', 'hover:bg-red-500');
             }
         });
-
     </script>
 </body>
 </html>
