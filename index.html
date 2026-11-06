@@ -75,7 +75,7 @@
             transform: scale(1.1);
         }
 
-        /* Botón de Música Minimalista (Estilo Boda) */
+        /* Botón de Música Minimalista */
         #music-btn {
             position: absolute;
             top: 25px;
@@ -90,7 +90,7 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            color: #dc2626; /* Rojo navideño para el icono */
+            color: #dc2626; 
             transition: transform 0.3s ease;
         }
         #music-btn:active {
@@ -108,127 +108,10 @@
 </head>
 <body class="h-[100dvh] w-full relative">
 
-    <!-- REPRODUCTOR DE YOUTUBE (TOTALMENTE INVISIBLE) -->
+    <!-- REPRODUCTOR DE YOUTUBE OCULTO -->
     <div id="youtube-player-container" style="position: fixed; top: -100px; left: -100px; width: 1px; height: 1px; overflow: hidden; pointer-events: none; opacity: 0.01;">
         <div id="youtube-player"></div>
     </div>
 
-    <!-- Snow container -->
-    <div id="snow-container" class="absolute inset-0 pointer-events-none z-0"></div>
-
-    <!-- Main UI -->
-    <div class="relative z-10 flex flex-col items-center justify-start pt-6 h-full w-full p-4 pointer-events-none">
-        
-        <!-- Header -->
-        <div class="text-center mb-4 glass-panel p-6 rounded-3xl pointer-events-auto flex flex-col items-center">
-            
-            <!-- Instructions -->
-            <p class="text-xs text-blue-900 font-bold text-center glass-panel px-4 py-1.5 rounded-full shadow-sm mb-3">
-                👆 Arrastra las decoraciones al gran árbol
-            </p>
-
-            <h1 class="text-6xl md:text-7xl text-red-600 xmas-font mb-2 drop-shadow-md tracking-wider">¡Feliz Navidad!</h1>
-            <p class="text-xl md:text-2xl text-blue-900 font-bold mt-2">Faltan:</p>
-            
-            <!-- Countdown -->
-            <div class="flex gap-2 md:gap-4 mt-3 justify-center">
-                <div class="flex flex-col items-center glass-panel px-3 py-2 md:px-5 md:py-4 rounded-xl">
-                    <span id="days" class="text-3xl md:text-5xl font-bold text-blue-900">00</span>
-                    <span class="text-xs md:text-sm text-blue-800 uppercase mt-1">Días</span>
-                </div>
-                <div class="text-2xl md:text-4xl font-bold text-blue-900 self-start mt-2">:</div>
-                <div class="flex flex-col items-center glass-panel px-3 py-2 md:px-5 md:py-4 rounded-xl">
-                    <span id="hours" class="text-3xl md:text-5xl font-bold text-blue-900">00</span>
-                    <span class="text-xs md:text-sm text-blue-800 uppercase mt-1">Horas</span>
-                </div>
-                <div class="text-2xl md:text-4xl font-bold text-blue-900 self-start mt-2">:</div>
-                <div class="flex flex-col items-center glass-panel px-3 py-2 md:px-5 md:py-4 rounded-xl">
-                    <span id="minutes" class="text-3xl md:text-5xl font-bold text-blue-900">00</span>
-                    <span class="text-xs md:text-sm text-blue-800 uppercase mt-1">Min</span>
-                </div>
-                <div class="text-2xl md:text-4xl font-bold text-blue-900 self-start mt-2">:</div>
-                <div class="flex flex-col items-center glass-panel px-3 py-2 md:px-5 md:py-4 rounded-xl">
-                    <span id="seconds" class="text-3xl md:text-5xl font-bold text-blue-900">00</span>
-                    <span class="text-xs md:text-sm text-blue-800 uppercase mt-1">Seg</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Giant Background Tree -->
-    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-[1] select-none pointer-events-none w-full flex justify-center items-end" style="height: 65vh;">
-        <img src="arbol.png" alt="Árbol de Navidad" class="h-full w-auto drop-shadow-2xl object-contain scale-125 translate-y-12">
-    </div>
-
-    <!-- Music Control Minimalista -->
-    <button id="music-btn" class="pointer-events-auto">
-        <svg id="icon-play" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
-        <svg id="icon-pause" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-    </button>
-
-    <!-- Draggable Decorations -->
-    <div class="draggable" style="top: 15%; left: 5%;">🎁</div>
-    <div class="draggable" style="top: 25%; left: 10%;">🌟</div>
-    <div class="draggable" style="top: 35%; left: 5%;">🔔</div>
-    <div class="draggable" style="top: 45%; left: 12%;">🍬</div>
-    <div class="draggable" style="top: 55%; left: 8%;">🎀</div>
-    <div class="draggable" style="top: 65%; left: 15%;">🦌</div>
-    <div class="draggable" style="top: 75%; left: 5%;">🎅</div>
-    <div class="draggable" style="top: 85%; left: 10%;">🎁</div>
-    <div class="draggable" style="top: 30%; left: 20%;">❄️</div>
-    <div class="draggable" style="top: 70%; left: 22%;">🕯️</div>
-    <div class="draggable" style="top: 88%; left: 25%;">🧸</div>
-    
-    <div class="draggable" style="top: 15%; left: 85%;">🎁</div>
-    <div class="draggable" style="top: 25%; left: 80%;">🌟</div>
-    <div class="draggable" style="top: 35%; left: 88%;">🔔</div>
-    <div class="draggable" style="top: 45%; left: 78%;">🍬</div>
-    <div class="draggable" style="top: 55%; left: 85%;">🎀</div>
-    <div class="draggable" style="top: 65%; left: 75%;">🦌</div>
-    <div class="draggable" style="top: 75%; left: 88%;">🎅</div>
-    <div class="draggable" style="top: 85%; left: 80%;">🎁</div>
-    <div class="draggable" style="top: 30%; left: 70%;">❄️</div>
-    <div class="draggable" style="top: 70%; left: 68%;">🕯️</div>
-    <div class="draggable" style="top: 10%; left: 45%;">⭐</div>
-    <div class="draggable" style="top: 88%; left: 65%;">🧸</div>
-
-    <script>
-        // --- 1. COUNTDOWN LOGIC ---
-        function updateCountdown() {
-            const now = new Date();
-            const currentYear = now.getFullYear();
-            let targetDate = new Date(`December 25, ${currentYear} 00:00:00`);
-            
-            if (now > targetDate) {
-                targetDate = new Date(`December 25, ${currentYear + 1} 00:00:00`);
-            }
-
-            const diff = targetDate - now;
-
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / 1000 / 60) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
-
-            document.getElementById('days').innerText = days.toString().padStart(2, '0');
-            document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
-            document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
-            document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
-        }
-        
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-
-        // --- 2. SNOW ANIMATION ---
-        function createSnowflakes() {
-            const container = document.getElementById('snow-container');
-            const numFlakes = 50;
-            
-            for (let i = 0; i < numFlakes; i++) {
-                const flake = document.createElement('div');
-                flake.classList.add('snow');
-                
-                const size = Math.random() * 4 + 2; 
-                const left = Math.random() * 100; 
-                const duration = Math.random() * 10 + 5; 
-                const delay = Math.random() * -15;
+    <!-- PANTALLA DE APERTURA (REPLICA EL SISTEMA DE TU BODA) -->
+    <div id="intro-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-
