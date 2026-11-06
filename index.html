@@ -6,16 +6,24 @@
     <title>Conteo Navideño Interactivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    <!-- Cambié la fuente a Great Vibes, mucho más elegante y navideña -->
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
+        /* Bloqueo total de scroll y recargas táctiles indeseadas */
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            overscroll-behavior: none; /* Evita que el móvil recargue al deslizar hacia abajo */
+        }
+        
         body {
             font-family: 'Quicksand', sans-serif;
-            overflow: hidden; 
             background: linear-gradient(to bottom, #a1c4fd 0%, #e0f6ff 60%, #ffffff 100%);
             background-repeat: no-repeat;
-            background-size: cover;
             background-attachment: fixed;
+            background-size: cover;
             color: #1e3a8a;
             touch-action: none; 
             position: relative;
@@ -83,18 +91,18 @@
         }
     </style>
 </head>
-<body class="h-[100dvh] w-screen relative">
+<body class="h-[100dvh] w-full relative">
 
     <!-- Snow container -->
     <div id="snow-container" class="absolute inset-0 pointer-events-none z-0"></div>
 
-    <!-- Main UI -->
-    <div class="relative z-10 flex flex-col items-center justify-start pt-20 h-full w-full p-4 pointer-events-none">
+    <!-- Main UI (pt-6 sube todo el bloque hacia arriba para dejar libre el árbol) -->
+    <div class="relative z-10 flex flex-col items-center justify-start pt-6 h-full w-full p-4 pointer-events-none">
         
         <!-- Header -->
         <div class="text-center mb-4 glass-panel p-6 rounded-3xl pointer-events-auto flex flex-col items-center">
             
-            <!-- Instructions (Movidas arriba del título y más pequeñas) -->
+            <!-- Instructions -->
             <p class="text-xs text-blue-900 font-bold text-center glass-panel px-4 py-1.5 rounded-full shadow-sm mb-3">
                 👆 Arrastra las decoraciones al gran árbol
             </p>
@@ -132,8 +140,8 @@
         <img src="arbol.png" alt="Árbol de Navidad" class="h-full w-auto drop-shadow-2xl object-contain scale-125 translate-y-12">
     </div>
 
-    <!-- Music Control -->
-    <button id="music-btn" class="absolute top-20 right-4 z-50 glass-panel bg-red-600 hover:bg-red-500 text-white p-4 rounded-full shadow-xl flex items-center justify-center touch-manipulation text-2xl">
+    <!-- Music Control (Movido hacia arriba para acompañar el nuevo diseño) -->
+    <button id="music-btn" class="absolute top-6 right-4 md:right-6 z-50 glass-panel bg-red-600 hover:bg-red-500 text-white p-4 rounded-full shadow-xl flex items-center justify-center touch-manipulation text-2xl">
         <span id="play-icon">🎵</span>
         <span id="pause-icon" class="hidden">⏸️</span>
     </button>
