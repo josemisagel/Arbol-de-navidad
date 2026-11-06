@@ -75,18 +75,34 @@
             transform: scale(1.1);
         }
 
+        /* Botón de Música Minimalista (Estilo Boda) */
         #music-btn {
-            transition: all 0.3s ease;
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: #dc2626; /* Rojo navideño para el icono */
+            transition: transform 0.3s ease;
+        }
+        #music-btn:active {
+            transform: scale(0.9);
         }
         #music-btn.playing {
-            animation: pulse 2s infinite;
-            background-color: #10b981; 
+            animation: pulse-red 2s infinite;
         }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
     </style>
 </head>
@@ -100,7 +116,7 @@
     <!-- Snow container -->
     <div id="snow-container" class="absolute inset-0 pointer-events-none z-0"></div>
 
-    <!-- Main UI (pt-6 sube todo el bloque hacia arriba para dejar libre el árbol) -->
+    <!-- Main UI -->
     <div class="relative z-10 flex flex-col items-center justify-start pt-6 h-full w-full p-4 pointer-events-none">
         
         <!-- Header -->
@@ -144,10 +160,10 @@
         <img src="arbol.png" alt="Árbol de Navidad" class="h-full w-auto drop-shadow-2xl object-contain scale-125 translate-y-12">
     </div>
 
-    <!-- Music Control -->
-    <button id="music-btn" class="absolute top-6 right-4 md:right-6 z-50 glass-panel bg-red-600 hover:bg-red-500 text-white p-4 rounded-full shadow-xl flex items-center justify-center touch-manipulation text-2xl">
-        <span id="play-icon">🎵</span>
-        <span id="pause-icon" class="hidden">⏸️</span>
+    <!-- Music Control Minimalista -->
+    <button id="music-btn" class="pointer-events-auto">
+        <svg id="icon-play" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+        <svg id="icon-pause" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
     </button>
 
     <!-- Draggable Decorations -->
@@ -299,12 +315,12 @@
 
         // --- 4. YOUTUBE MUSIC LOGIC ---
         const VIDEO_ID = 'S4QkF9_0-7o'; // <-- CAMBIA ESTO POR EL ID DE YOUTUBE QUE QUIERAS
+        
         let player, isPlaying = false;
         const musicBtn = document.getElementById('music-btn');
-        const playIcon = document.getElementById('play-icon');
-        const pauseIcon = document.getElementById('pause-icon');
+        const playIcon = document.getElementById('icon-play');
+        const pauseIcon = document.getElementById('icon-pause');
 
-        // Cargar el script de YouTube Iframe API
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -342,7 +358,7 @@
             }
         }
 
-        // Evento del botón de música
+        // Lógica para reproducir/pausar con el botón
         musicBtn.addEventListener('click', () => {
             if (!player || typeof player.playVideo !== 'function') return;
 
@@ -353,15 +369,11 @@
                 playIcon.classList.add('hidden');
                 pauseIcon.classList.remove('hidden');
                 musicBtn.classList.add('playing');
-                musicBtn.classList.replace('bg-red-600', 'bg-green-500');
-                musicBtn.classList.replace('hover:bg-red-500', 'hover:bg-green-400');
             } else {
                 player.pauseVideo();
                 playIcon.classList.remove('hidden');
                 pauseIcon.classList.add('hidden');
                 musicBtn.classList.remove('playing');
-                musicBtn.classList.replace('bg-green-500', 'bg-red-600');
-                musicBtn.classList.replace('hover:bg-green-400', 'hover:bg-red-500');
             }
         });
     </script>
