@@ -32,7 +32,7 @@
             font-family: 'Great Vibes', cursive;
         }
 
-        /* Snowflake Animation */
+        /* Animación de Nieve */
         .snow {
             position: absolute;
             top: -10px;
@@ -49,7 +49,7 @@
             100% { transform: translateY(110vh) scale(1.5); opacity: 0; }
         }
 
-        /* Glassmorphism for countdown */
+        /* Glassmorphism */
         .glass-panel {
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
@@ -58,7 +58,7 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
         }
 
-        /* Draggable elements */
+        /* Elementos arrastrables */
         .draggable {
             position: absolute;
             cursor: grab;
@@ -113,5 +113,286 @@
         <div id="youtube-player"></div>
     </div>
 
-    <!-- PANTALLA DE APERTURA (REPLICA EL SISTEMA DE TU BODA) -->
-    <div id="intro-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-
+    <!-- PANTALLA DE APERTURA (El "Regalo" para activar la música automáticamente) -->
+    <div id="intro-screen" class="fixed top-0 left-0 w-full h-full z-[100] flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity duration-1000 cursor-pointer" onclick="iniciarMagia()">
+        <div class="bg-white/20 p-10 rounded-3xl backdrop-blur-md border border-white/30 text-center shadow-2xl animate-pulse">
+            <h2 class="font-sans text-sm mb-4 text-white uppercase tracking-[0.2em] font-bold">Especial de Navidad</h2>
+            <div class="text-7xl my-6">🎁</div>
+            <p class="text-white font-bold text-xl mt-4">Toca para abrir</p>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL (Oculto al inicio) -->
+    <div id="main-content" style="display: none; opacity: 0; transition: opacity 1s ease-in-out;" class="h-full w-full">
+
+        <!-- Contenedor de nieve -->
+        <div id="snow-container" class="absolute inset-0 pointer-events-none z-0"></div>
+
+        <!-- Interfaz Principal del Contador -->
+        <div class="relative z-10 flex flex-col items-center justify-start pt-12 h-full w-full p-4 pointer-events-none">
+            <div class="text-center mb-4 glass-panel p-6 rounded-3xl pointer-events-auto flex flex-col items-center max-w-[95%]">
+                
+                <p class="text-xs text-blue-900 font-bold text-center glass-panel px-4 py-1.5 rounded-full shadow-sm mb-3">
+                    👆 Arrastra las decoraciones al gran árbol
+                </p>
+
+                <h1 class="text-6xl md:text-7xl text-red-600 xmas-font mb-2 drop-shadow-md tracking-wider">¡Feliz Navidad!</h1>
+                <p class="text-xl md:text-2xl text-blue-900 font-bold mt-2">Faltan:</p>
+                
+                <!-- Contador -->
+                <div class="flex gap-2 md:gap-4 mt-3 justify-center">
+                    <div class="flex flex-col items-center glass-panel px-3 py-2 md:px-5 md:py-4 rounded-xl">
+                        <span id="days" class="text-3xl md:text-5xl font-bold text-blue-900">00</span>
+                        <span class="text-xs md:text-sm text-blue-800 uppercase mt-1">Días</span>
+                    </div>
+                    <div class="text-2xl md:text-4xl font-bold text-blue-900 self-start mt-2">:</div>
+                    <div class="flex flex-col items-center glass-panel px-3 py-2 md:px-5 md:py-4 rounded-xl">
+                        <span id="hours" class="text-3xl md:text-5xl font-bold text-blue-900">00</span>
+                        <span class="text-xs md:text-sm text-blue-800 uppercase mt-1">Horas</span>
+                    </div>
+                    <div class="text-2xl md:text-4xl font-bold text-blue-900 self-start mt-2">:</div>
+                    <div class="flex flex-col items-center glass-panel px-3 py-2 md:px-5 md:py-4 rounded-xl">
+                        <span id="minutes" class="text-3xl md:text-5xl font-bold text-blue-900">00</span>
+                        <span class="text-xs md:text-sm text-blue-800 uppercase mt-1">Min</span>
+                    </div>
+                    <div class="text-2xl md:text-4xl font-bold text-blue-900 self-start mt-2">:</div>
+                    <div class="flex flex-col items-center glass-panel px-3 py-2 md:px-5 md:py-4 rounded-xl">
+                        <span id="seconds" class="text-3xl md:text-5xl font-bold text-blue-900">00</span>
+                        <span class="text-xs md:text-sm text-blue-800 uppercase mt-1">Seg</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Árbol de Fondo -->
+        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-[1] select-none pointer-events-none w-full flex justify-center items-end" style="height: 65vh;">
+            <img src="arbol.png" alt="Árbol de Navidad" class="h-full w-auto drop-shadow-2xl object-contain scale-125 translate-y-12">
+        </div>
+
+        <!-- Botón de Música Minimalista -->
+        <button id="music-btn" class="pointer-events-auto" onclick="toggleMusic(event)">
+            <svg id="icon-play" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+            <svg id="icon-pause" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+        </button>
+
+        <!-- Decoraciones -->
+        <div class="draggable" style="top: 15%; left: 5%;">🎁</div>
+        <div class="draggable" style="top: 25%; left: 10%;">🌟</div>
+        <div class="draggable" style="top: 35%; left: 5%;">🔔</div>
+        <div class="draggable" style="top: 45%; left: 12%;">🍬</div>
+        <div class="draggable" style="top: 55%; left: 8%;">🎀</div>
+        <div class="draggable" style="top: 65%; left: 15%;">🦌</div>
+        <div class="draggable" style="top: 75%; left: 5%;">🎅</div>
+        <div class="draggable" style="top: 85%; left: 10%;">🎁</div>
+        <div class="draggable" style="top: 30%; left: 20%;">❄️</div>
+        <div class="draggable" style="top: 70%; left: 22%;">🕯️</div>
+        <div class="draggable" style="top: 88%; left: 25%;">🧸</div>
+        
+        <div class="draggable" style="top: 15%; left: 85%;">🎁</div>
+        <div class="draggable" style="top: 25%; left: 80%;">🌟</div>
+        <div class="draggable" style="top: 35%; left: 88%;">🔔</div>
+        <div class="draggable" style="top: 45%; left: 78%;">🍬</div>
+        <div class="draggable" style="top: 55%; left: 85%;">🎀</div>
+        <div class="draggable" style="top: 65%; left: 75%;">🦌</div>
+        <div class="draggable" style="top: 75%; left: 88%;">🎅</div>
+        <div class="draggable" style="top: 85%; left: 80%;">🎁</div>
+        <div class="draggable" style="top: 30%; left: 70%;">❄️</div>
+        <div class="draggable" style="top: 70%; left: 68%;">🕯️</div>
+        <div class="draggable" style="top: 10%; left: 45%;">⭐</div>
+        <div class="draggable" style="top: 88%; left: 65%;">🧸</div>
+    </div> 
+
+    <script>
+        // --- 1. LÓGICA DEL CONTADOR ---
+        function updateCountdown() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            let targetDate = new Date(`December 25, ${currentYear} 00:00:00`);
+            
+            if (now > targetDate) {
+                targetDate = new Date(`December 25, ${currentYear + 1} 00:00:00`);
+            }
+
+            const diff = targetDate - now;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / 1000 / 60) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('days').innerText = days.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // --- 2. LÓGICA DE LA NIEVE ---
+        function createSnowflakes() {
+            const container = document.getElementById('snow-container');
+            const numFlakes = window.innerWidth < 768 ? 30 : 50; 
+            for (let i = 0; i < numFlakes; i++) {
+                const flake = document.createElement('div');
+                flake.classList.add('snow');
+                const size = Math.random() * 4 + 2; 
+                const left = Math.random() * 100; 
+                const duration = Math.random() * 10 + 5; 
+                const delay = Math.random() * -15; 
+                flake.style.width = `${size}px`;
+                flake.style.height = `${size}px`;
+                flake.style.left = `${left}%`;
+                flake.style.animationDuration = `${duration}s`;
+                flake.style.animationDelay = `${delay}s`;
+                container.appendChild(flake);
+            }
+        }
+        createSnowflakes();
+
+        // --- 3. LÓGICA DE ARRASTRAR (DRAG & DROP) ---
+        const draggables = document.querySelectorAll('.draggable');
+        let activeItem = null, initialX, initialY, currentX, currentY;
+
+        draggables.forEach(item => {
+            item.dataset.xOffset = 0;
+            item.dataset.yOffset = 0;
+            item.addEventListener('touchstart', dragStart, { passive: false });
+            item.addEventListener('touchend', dragEnd, false);
+            item.addEventListener('touchmove', drag, { passive: false });
+            item.addEventListener('mousedown', dragStart, false);
+            document.addEventListener('mouseup', dragEnd, false);
+            document.addEventListener('mousemove', drag, false);
+        });
+
+        function dragStart(e) {
+            if (!e.target.classList.contains('draggable')) return;
+            activeItem = e.target;
+            draggables.forEach(d => d.style.zIndex = 10);
+            activeItem.style.zIndex = 100;
+            let xOffset = parseFloat(activeItem.dataset.xOffset);
+            let yOffset = parseFloat(activeItem.dataset.yOffset);
+            if (e.type === "touchstart") {
+                initialX = e.touches[0].clientX - xOffset;
+                initialY = e.touches[0].clientY - yOffset;
+            } else {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+        }
+
+        function drag(e) {
+            if (activeItem) {
+                e.preventDefault(); 
+                if (e.type === "touchmove") {
+                    currentX = e.touches[0].clientX - initialX;
+                    currentY = e.touches[0].clientY - initialY;
+                } else {
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                }
+                activeItem.dataset.xOffset = currentX;
+                activeItem.dataset.yOffset = currentY;
+                setTranslate(currentX, currentY, activeItem);
+            }
+        }
+
+        function setTranslate(xPos, yPos, el) { el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0) scale(1.1)`; }
+        function dragEnd(e) {
+            if (activeItem) {
+                activeItem.style.transform = `translate3d(${activeItem.dataset.xOffset}px, ${activeItem.dataset.yOffset}px, 0) scale(1)`;
+                activeItem = null;
+            }
+        }
+
+        // --- 4. LÓGICA DE YOUTUBE Y PANTALLA DE INICIO ---
+        const VIDEO_ID = 'S4QkF9_0-7o'; // <--- CAMBIA LA CANCIÓN AQUÍ
+        
+        let player, isPlaying = false, playOnReady = false;
+        const musicBtn = document.getElementById('music-btn');
+        const playIcon = document.getElementById('icon-play');
+        const pauseIcon = document.getElementById('icon-pause');
+        const introScreen = document.getElementById('intro-screen');
+        const mainContent = document.getElementById('main-content');
+
+        // Insertar Script de YouTube de forma segura
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '10', width: '10',
+                videoId: VIDEO_ID,
+                playerVars: {
+                    'autoplay': 0, 'controls': 0, 'loop': 1,
+                    'playlist': VIDEO_ID, 'playsinline': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.setVolume(50);
+            if (playOnReady) {
+                event.target.playVideo();
+                setPlayingUI();
+            }
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                player.playVideo();
+            }
+        }
+
+        function setPlayingUI() {
+            isPlaying = true;
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+            musicBtn.classList.add('playing');
+        }
+
+        function setPausedUI() {
+            isPlaying = false;
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            musicBtn.classList.remove('playing');
+        }
+
+        // Se ejecuta al tocar el "Regalo"
+        function iniciarMagia() {
+            // 1. Ocultar regalo y mostrar contenido
+            introScreen.style.opacity = '0';
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                setTimeout(() => mainContent.style.opacity = '1', 50);
+            }, 800);
+
+            // 2. Dar Play a la música
+            if (player && typeof player.playVideo === 'function') {
+                player.playVideo();
+                setPlayingUI();
+            } else {
+                playOnReady = true; 
+            }
+        }
+
+        // Botón manual de Pausa/Play
+        function toggleMusic(e) {
+            e.stopPropagation();
+            if (!player || typeof player.playVideo !== 'function') return;
+            if (isPlaying) {
+                player.pauseVideo();
+                setPausedUI();
+            } else {
+                player.playVideo();
+                setPlayingUI();
+            }
+        }
+    </script>
+</body>
+</html>
